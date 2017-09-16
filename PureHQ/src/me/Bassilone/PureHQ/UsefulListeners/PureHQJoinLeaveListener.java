@@ -26,7 +26,6 @@ public class PureHQJoinLeaveListener implements Listener{
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
-		event.getPlayer().sendMessage(ChatColor.YELLOW + "This server uses the PureHQ core by Bassilone");
 		if (event.getPlayer().isOp()){
 			for (Player all : Bukkit.getServer().getOnlinePlayers()) {
 			      if (all.isOp() && all.getName().toString() != event.getPlayer().getName().toString()) {
