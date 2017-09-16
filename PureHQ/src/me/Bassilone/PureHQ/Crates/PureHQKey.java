@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Bassilone.PureHQ.PureHQMain;
 
@@ -19,6 +22,10 @@ public class PureHQKey {
 	public boolean keymain(CommandSender sender, String[] args){
 		if (sender instanceof Player){
 			Player player = (Player) sender;
+			if (!player.isOp()){
+				player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+				return true;
+			}
 			if (args.length == 4){
 				if (args[0].equalsIgnoreCase("give")|| args[0].equalsIgnoreCase("add")){
 					return keyadd(player, args);
@@ -28,12 +35,7 @@ public class PureHQKey {
 			}
 		}else{
 			if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("add")){
-				Player player = Bukkit.getPlayer(args[1]);
-				if (player != null){
-					return keyadd(player,args);
-				}else{
-					return true;
-				}
+				return keyaddConsole(args);
 			}
 		}
 		return true;
@@ -41,10 +43,6 @@ public class PureHQKey {
 
 	@SuppressWarnings({ "deprecation" })
 	public boolean keyadd(Player player, String[] args){
-		if (!player.isOp()){
-			player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
-			return true;
-		}
 		List<String> o = (List<String>) PureHQMain.crates.getStringList("Crates");
 		if (o != null){
 			if (o.contains(args[2])){
@@ -53,7 +51,7 @@ public class PureHQKey {
 						if (all.getName().equals(args[1])) {
 							if (all.getInventory().firstEmpty() != -1) return PureHQCrateManager.addKey(player, all, args[2], Integer.parseInt(args[3]));
 							else{
-								player.sendMessage(ChatColor.RED + "This player has no space in his inventory!");
+								player.sendMessage(ChatColor.RED + "No inventory space!");
 								return true;
 							}
 						}      
@@ -64,6 +62,34 @@ public class PureHQKey {
 				}
 			}else{
 				player.sendMessage(ChatColor.RED + "Add valid cratename!");
+			}
+		}
+		return true;
+	}
+	
+	@SuppressWarnings({ "deprecation" })
+	public boolean keyaddConsole(String[] args){
+		List<String> o = (List<String>) PureHQMain.crates.getStringList("Crates");
+		if (o != null){
+			if (o.contains(args[2])){
+				if (args[3].matches("[0-9]+")){
+					for (Player all : Bukkit.getServer().getOnlinePlayers()) {
+						if (all.getName().equals(args[1])) {
+							if (all.getInventory().firstEmpty() != -1){
+								ItemStack is = new ItemStack(Material.NETHER_STAR,Integer.parseInt(args[3]));
+								ItemMeta im = is.getItemMeta();
+								im.setDisplayName("§2"+ args[2] + " §1key");
+								is.setItemMeta(im);
+								all.getInventory().setItem(all.getInventory().firstEmpty(), is);
+								all.updateInventory();
+								return true;
+							}
+							else{
+								return true;
+							}
+						}      
+					}
+				}
 			}
 		}
 		return true;

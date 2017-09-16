@@ -18,6 +18,11 @@ public class PureHQClaim {
 			return claimAddKeys(player, args);
 		}else if (args.length == 4 && (args[0].equalsIgnoreCase("removekeys")|| args[0].equalsIgnoreCase("removekey"))){
 			return claimRemoveKeys(player, args);
+		}else if (args.length == 3 && (args[0].equalsIgnoreCase("addlives")|| args[0].equalsIgnoreCase("addlife"))){
+			return claimAddLives(player, args);
+		}else if (args.length == 3 && (args[0].equalsIgnoreCase("removelives")|| args[0].equalsIgnoreCase("removelife"))){
+			return claimRemoveLives(player, args);
+			
 		}else{
 			return true;
 		}
@@ -48,9 +53,64 @@ public class PureHQClaim {
 				PureHQFileManage.saveYamls();
 				Bukkit.broadcastMessage(ChatColor.GRAY + "[Claim] " + ChatColor.RED + playerName + ChatColor.YELLOW + " has claimed their keys and lives!");
 			}
+		}else{
+			player.sendMessage(ChatColor.RED + "You already claimed!");
 		}
 		return true;
 	}
+	
+	public static boolean claimAddLives(Player player, String[] args){
+		String rank = args[1];
+		String amount = args[2];
+		if (!amount.matches("[0-9]+")){
+			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+		}
+		String rankAvailable = PureHQMain.ranks.getString(rank);
+		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
+		String command = "lives add {player} "+ amount;
+		if (rankAvailable == null){
+			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			return true;
+		}
+		if (commands == null){
+			commands = new ArrayList<String>();
+			commands.add(command);
+			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank);
+		}else{
+			commands.add(command);
+			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank); 
+		}
+		PureHQMain.ranks.set(rank + ".commands", commands);
+		PureHQFileManage.saveYamls();
+		return true;
+	}
+	
+
+	public static boolean claimRemoveLives(Player player, String[] args){
+		String rank = args[1];
+		
+		String amount = args[2];
+		if (!amount.matches("[0-9]+")){
+			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+		}
+		String rankAvailable = PureHQMain.ranks.getString(rank);
+		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
+		String command = "lives add {player} "+ amount;
+		if (rankAvailable == null){
+			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			return true;
+		}
+		if (commands != null && commands.contains(command)){
+			commands.remove(command);
+			player.sendMessage(ChatColor.GREEN + "Removed " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " from " + ChatColor.DARK_GRAY + rank); 
+		}else{
+			player.sendMessage(ChatColor.RED + "This rank does not have this command attached!");
+		}
+		PureHQMain.ranks.set(rank + ".commands", commands);
+		PureHQFileManage.saveYamls();
+		return true;
+	}
+	
 	
 	public static boolean claimAddKeys(Player player, String[] args){
 		String rank = args[1];

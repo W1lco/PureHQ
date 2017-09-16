@@ -13,11 +13,11 @@ import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
 public class PureHQRanks {
 	
 	public static boolean ranks(Player player, String[] args){
-		if (!player.isOp()){
+		if (args.length == 0 || args.length == 1){
+			return tellRank(player, args);
+		}else if (!player.isOp()){
 			player.sendMessage(ChatColor.RED+ "You don't have permission to perform this command");
 			return true;
-		}else if (args.length == 0 || args.length == 1){
-			return tellRank(player, args);
 		}else if (args.length == 2 && args[0].equalsIgnoreCase("add")){
 			return addRank(player, args);
 		}else if (args.length == 2 && args[0].equalsIgnoreCase("delete")){
