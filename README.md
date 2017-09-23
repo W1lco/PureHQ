@@ -1,7 +1,8 @@
 # PureHQ
 
 To build the plugin:
-- Clone or download this repository
+- Download this repository (master-branch)
+- Unzip the repository
 - Open eclipse
 - Go to: File > Import > General > Existing project
 - Choose the root directory of the repository
