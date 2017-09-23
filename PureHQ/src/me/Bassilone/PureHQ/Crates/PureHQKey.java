@@ -1,16 +1,14 @@
 package me.Bassilone.PureHQ.Crates;
 
 import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import me.Bassilone.PureHQ.PureHQMain;
+import me.Bassilone.PureHQ.UsefulMethods.PureHQStrings;
 
 
 public class PureHQKey {
@@ -23,12 +21,12 @@ public class PureHQKey {
 		if (sender instanceof Player){
 			Player player = (Player) sender;
 			if (!player.isOp()){
-				player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+				player.sendMessage(PureHQStrings.NO_PERMISSION);
 				return true;
 			}
 			if (args.length == 4 && (args[0].equalsIgnoreCase("give")|| args[0].equalsIgnoreCase("add")))
 				return keyadd(player, args);
-			else player.sendMessage(ChatColor.RED + "Usage: crate add|remove player type amount");
+			else player.sendMessage(PureHQStrings.WRONG_COMMAND);
 		}
 		else {
 			if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("add")) return keyaddConsole(args);
@@ -42,15 +40,15 @@ public class PureHQKey {
 		if (o != null && o.contains(args[2]) && args[3].matches("[0-9]+")){
 			for (Player all : Bukkit.getServer().getOnlinePlayers()) {
 				if (all.getName().equals(args[1])) {
-					if (all.getInventory().firstEmpty() != -1) return PureHQCrateManager.addKey(player, all, args[2], Integer.parseInt(args[3]));
+					if (all.getInventory().firstEmpty() != -1) return PureHQKeyManager.addKey(player, all, args[2], Integer.parseInt(args[3]));
 					else{
-						player.sendMessage(ChatColor.RED + "No inventory space!");
+						player.sendMessage(PureHQStrings.INVENTORY_NO_SPOT);
 						return true;
 					}
 				}      
 			}
-			player.sendMessage(ChatColor.RED + "Enter valid playername!");
-		}else player.sendMessage(ChatColor.RED + "Add valid cratename and amount should be a number!");
+			player.sendMessage(PureHQStrings.PLAYER_DOESNT_EXIST);
+		}else player.sendMessage(PureHQStrings.WRONG_COMMAND);
 		return true;
 	}
 	
@@ -63,7 +61,7 @@ public class PureHQKey {
 					if (all.getInventory().firstEmpty() != -1){
 						ItemStack is = new ItemStack(Material.NETHER_STAR,Integer.parseInt(args[3]));
 						ItemMeta im = is.getItemMeta();
-						im.setDisplayName("§2"+ args[2] + " §1key");
+						im.setDisplayName(PureHQStrings.KEY_NAME.replace("{crate}", args[2]));
 						is.setItemMeta(im);
 						all.getInventory().setItem(all.getInventory().firstEmpty(), is);
 						all.updateInventory();

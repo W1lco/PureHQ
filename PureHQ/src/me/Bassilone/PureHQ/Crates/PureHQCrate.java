@@ -3,7 +3,6 @@ package me.Bassilone.PureHQ.Crates;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,20 +14,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.Bassilone.PureHQ.PureHQMain;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQHiddenString;
+import me.Bassilone.PureHQ.UsefulMethods.PureHQStrings;
 
 
 
 public class PureHQCrate {
-	@SuppressWarnings("unused")
-	private PureHQMain plugin;
-	
-	public PureHQCrate(PureHQMain main){
-		this.plugin = main;
-	}
-	
 	public boolean cratemain(Player player, String[] args){
 		if (!player.isOp()){
-			player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+			player.sendMessage(PureHQStrings.NO_PERMISSION);
 			return true;
 		}
 		if (args.length == 2){
@@ -40,7 +33,7 @@ public class PureHQCrate {
 			if (args[0].equals("additem") || args[0].equals("ai")) return crateadditem (player,args);
 			if (args[0].equals("getitem") || args[0].equals("gi")) return crategetitem (player,args);
 		}
-		player.sendMessage(ChatColor.RED + "You entered the wrong command!");
+		player.sendMessage(PureHQStrings.WRONG_COMMAND);
 		return true;
 	}
 	
@@ -50,23 +43,24 @@ public class PureHQCrate {
 			obj.add(args[1]);
 			PureHQMain.crates.set("Crates",obj);
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.GREEN + "Successfully added crate " + ChatColor.RED + args[1]);
+			player.sendMessage(PureHQStrings.CRATE_ADDED.replace("{crate}", args[1]));
 			return true;
 		}else{
-			player.sendMessage(ChatColor.RED + "This crate already exists!");
+			player.sendMessage(PureHQStrings.CRATE_EXISTS);
 			return true;
 		}
 	}
+	
 	public boolean crateremove(Player player, String[] args){
 		List<String> obj = PureHQMain.crates.getStringList("Crates");
 		if (obj == null || !obj.contains(args[1])){
-			player.sendMessage(ChatColor.RED + "This crate doesn't exists!");
+			player.sendMessage(PureHQStrings.CRATE_DOESNT_EXIST);
 			return true;
 		}else{
 			obj.remove(args[1]);
 			PureHQMain.crates.set("Crates",obj);
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.GREEN + "Successfully removed crate " + ChatColor.RED + args[1]);
+			player.sendMessage(PureHQStrings.CRATE_REMOVED.replace("{crate}", args[1]));
 			return true;
 		}
 	}
@@ -77,7 +71,7 @@ public class PureHQCrate {
 		if (b.getType() == Material.CHEST){
 			List<String> obj = PureHQMain.crates.getStringList("Crates");
 			if (obj == null || !obj.contains(args[1])){
-				player.sendMessage(ChatColor.RED + "This cratetype does not exist!");
+				player.sendMessage(PureHQStrings.CRATE_DOESNT_EXIST);
 				return true;
 			}
 			Location location = b.getLocation();
@@ -87,14 +81,14 @@ public class PureHQCrate {
 			if (locList == null){
 				locList = new ArrayList<String>();
 				locList.add(locString);
-				player.sendMessage(ChatColor.GREEN + args[1] + " crate successfully set!");
+				player.sendMessage(PureHQStrings.CRATE_SET.replace("{crate}",args[1]));
 			}else{
 				if (locList.contains(locString)){
-					player.sendMessage(ChatColor.RED + "This chest is already of type " + args[1]);
+					player.sendMessage(PureHQStrings.CHEST_CRATE_EXISTS.replace("{crate}", args[1]));
 					return true;
 				}
 				locList.add(locString);
-				player.sendMessage(ChatColor.GREEN + args[1] + " crate successfully set!");
+				player.sendMessage(PureHQStrings.CRATE_SET.replace("{crate}", args[1]));
 			}
 			PureHQMain.crates.set("Crates locations." + args[1], locList);
 			PureHQFileManage.saveYamls();
@@ -107,12 +101,12 @@ public class PureHQCrate {
 		String cratetype = args[1];
 		ItemStack is = player.getItemInHand();
 		if (is.getType().equals(Material.AIR)){
-			player.sendMessage(ChatColor.RED + "Cannot remove air!");
+			player.sendMessage(PureHQStrings.REMOVE_AIR);
 			return true;
 		}
 		List<ItemStack> itemlist = (List<ItemStack>)PureHQMain.crates.get("Crateitem." + cratetype);
 		if (itemlist == null || !itemlist.contains(is)){
-			player.sendMessage(ChatColor.RED + "This crate doesn't contain that item!");
+			player.sendMessage(PureHQStrings.ITEM_NOT_IN_CRATE);
 			return true;
 		}else{
 			for (ItemStack i : itemlist){
@@ -121,7 +115,7 @@ public class PureHQCrate {
 						itemlist.remove(i);
 						PureHQMain.crates.set("Crateitem."+cratetype, itemlist);
 						PureHQFileManage.saveYamls();
-						player.sendMessage(ChatColor.GREEN + "Successfully removed " + ChatColor.RED + is.getType().toString());
+						player.sendMessage(PureHQStrings.ITEM_CRATE_REMOVAL.replace("{item}", is.getType().toString()));
 						break;
 					}
 				}
@@ -134,7 +128,7 @@ public class PureHQCrate {
 	public boolean crategetitem(Player player, String[] args){
 		String cratetype = args[1];
 		if (!args[2].matches("[0-9]+")){
-			player.sendMessage(ChatColor.RED + "Please enter the position (number) of the item you want to retrieve!");
+			player.sendMessage(PureHQStrings.CRATE_GET_ITEM_INT);
 			return true;
 		}
 		int index = Integer.parseInt(args[2]);
@@ -144,32 +138,31 @@ public class PureHQCrate {
 			ItemStack[] islist = itemlist.toArray(new ItemStack[0]);
 			inv.setContents(islist);
 			if (index < 0 || index > inv.firstEmpty() -1){
-				player.sendMessage(ChatColor.RED + "That position is empty!");
+				player.sendMessage(PureHQStrings.POSITION_EMPTY);
 			}else{
 				if (player.getInventory().firstEmpty() == -1){
-					player.sendMessage(ChatColor.RED + "You don't have a free spot in your inventory!");
+					player.sendMessage(PureHQStrings.INVENTORY_NO_SPOT);
 				}else{
 					player.getInventory().setItem(player.getInventory().firstEmpty(), inv.getItem(index));
-					player.sendMessage(ChatColor.GREEN + "Successfully added item!");
+					player.sendMessage(PureHQStrings.CRATE_GET_ITEM);
 				}
 			}
 		}
 		return true;
 	}
 	
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings("unchecked")
 	public boolean crateadditem(Player player, String[] args){
 		if (args.length == 3){
 			String percentage = args[2];
 			if (!percentage.matches("[0-9]+")){
-				player.sendMessage(ChatColor.RED + "Usage: crate cratename additem percentage");
+				player.sendMessage(PureHQStrings.USAGE_CRATE_ADD_ITEM);
 				return true;
 			}
 			int percent = Integer.parseInt(percentage);
-			Inventory inv = player.getInventory();
 			List<ItemStack> itemlist = (List<ItemStack>)PureHQMain.crates.get("Crateitem." + args[1]);
 			if (player.getItemInHand().getType() == Material.AIR){
-				player.sendMessage(ChatColor.RED + "Cannot add air!");
+				player.sendMessage(PureHQStrings.REMOVE_AIR);
 				return true;
 			}
 			if (itemlist != null){
@@ -190,11 +183,11 @@ public class PureHQCrate {
 				is.setItemMeta(im);
 				itemlist.add(is);
 			}
-			player.sendMessage(ChatColor.GREEN + "Successfully added item to the crate!");
+			player.sendMessage(PureHQStrings.CRATE_SET_ITEM);
 			PureHQMain.crates.set("Crateitem." + args[1], itemlist);
 			PureHQFileManage.saveYamls();
 		}else{
-			player.sendMessage(ChatColor.RED + "Usage: crate additem percentage");
+			player.sendMessage(PureHQStrings.USAGE_CRATE_ADD_ITEM);
 		}
 		return true;
 	}

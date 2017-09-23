@@ -86,7 +86,7 @@ public class PureHQMain extends JavaPlugin{
 			if (command.getName().equalsIgnoreCase("pay"))return PureHQEconomyCommands.pay(sender, args);
 			if (command.getName().equalsIgnoreCase("balance"))return new PureHQEconomyCommands(this).bal(sender, args);
 			if (command.getName().equalsIgnoreCase("key"))return new PureHQKey(this).keymain((Player)sender, args);
-			if (command.getName().equalsIgnoreCase("crate"))return new PureHQCrate(this).cratemain((Player) sender, args);
+			if (command.getName().equalsIgnoreCase("crate"))return new PureHQCrate().cratemain((Player) sender, args);
 			if (command.getName().equalsIgnoreCase("heal"))return PureHQStaff.heal((Player)sender, args);
 			if (command.getName().equalsIgnoreCase("feed"))return PureHQStaff.feed((Player)sender, args);
 			if (command.getName().equalsIgnoreCase("rank"))return PureHQRanks.ranks((Player)sender, args);
