@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.Bassilone.PureHQ.PureHQMain;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
+import me.Bassilone.PureHQ.UsefulMethods.PureHQStrings;
 import net.md_5.bungee.api.ChatColor;
 
 public class PureHQClaim {
@@ -34,7 +35,7 @@ public class PureHQClaim {
 		String rank = PureHQMain.playerData.getString("Name." + playerName + ".rank");
 		String rankAvailable = PureHQMain.ranks.getString(rank);
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}
 		boolean claimedAlready = PureHQMain.playerData.getBoolean("Name." + playerName + ".claimed");
@@ -69,7 +70,7 @@ public class PureHQClaim {
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
 		String command = "lives add {player} "+ amount;
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}
 		if (commands == null){
@@ -97,7 +98,7 @@ public class PureHQClaim {
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
 		String command = "lives add {player} "+ amount;
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}
 		if (commands != null && commands.contains(command)){
@@ -123,7 +124,7 @@ public class PureHQClaim {
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
 		String command = "key give {player} " + keyType + " " + amount;
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}
 		if (commands == null){
@@ -150,7 +151,7 @@ public class PureHQClaim {
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
 		String command = "key give {player} " + keyType + " " + amount;
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}
 		if (commands != null && commands.contains(command)){

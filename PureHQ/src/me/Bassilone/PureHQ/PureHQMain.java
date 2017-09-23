@@ -23,6 +23,7 @@ import me.Bassilone.PureHQ.Staff.PureHQChatListener;
 import me.Bassilone.PureHQ.Staff.PureHQGamemodes;
 import me.Bassilone.PureHQ.Staff.PureHQStaff;
 import me.Bassilone.PureHQ.Staff.PureHQTeleport;
+import me.Bassilone.PureHQ.UsefulListeners.PureHQDeathListener;
 import me.Bassilone.PureHQ.UsefulListeners.PureHQInteractListener;
 import me.Bassilone.PureHQ.UsefulListeners.PureHQJoinLeaveListener;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
@@ -31,19 +32,16 @@ import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
 
 public class PureHQMain extends JavaPlugin{
 	public static File cratesFile;
-	public static FileConfiguration crates;
+	public static FileConfiguration crates = new YamlConfiguration();
 	public static File playerDataFile;
-	public static FileConfiguration playerData;
+	public static FileConfiguration playerData = new YamlConfiguration();
 	public static File ranksFile;
-	public static FileConfiguration ranks;
+	public static FileConfiguration ranks = new YamlConfiguration();
 	public void onEnable(){
 		PureHQFileManage fm = new PureHQFileManage(this);
 		playerDataFile = new File(getDataFolder(), "/data/playerdata.yml");
-		playerData = new YamlConfiguration();
 		ranksFile = new File(getDataFolder(), "/data/ranks.yml");
-		ranks = new YamlConfiguration();
 		cratesFile = new File(getDataFolder(), "/data/crates.yml");
-		crates = new YamlConfiguration();
 		try {
             fm.firstRun();
         } catch (Exception e) {
@@ -64,6 +62,7 @@ public class PureHQMain extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new PureHQSignListener(this), this);
 		getServer().getPluginManager().registerEvents(new PureHQInteractListener(this), this);
 		getServer().getPluginManager().registerEvents(new PureHQInventoryListener(), this);
+		getServer().getPluginManager().registerEvents(new PureHQDeathListener(this), this);
 	}
 	
 	public void onDisable(){
@@ -87,7 +86,7 @@ public class PureHQMain extends JavaPlugin{
 			if (command.getName().equalsIgnoreCase("pay"))return PureHQEconomyCommands.pay(sender, args);
 			if (command.getName().equalsIgnoreCase("balance"))return new PureHQEconomyCommands(this).bal(sender, args);
 			if (command.getName().equalsIgnoreCase("key"))return new PureHQKey(this).keymain((Player)sender, args);
-			if (command.getName().equalsIgnoreCase("crate"))return new PureHQCrate(this).cratemain((Player) sender, args);
+			if (command.getName().equalsIgnoreCase("crate"))return new PureHQCrate().cratemain((Player) sender, args);
 			if (command.getName().equalsIgnoreCase("heal"))return PureHQStaff.heal((Player)sender, args);
 			if (command.getName().equalsIgnoreCase("feed"))return PureHQStaff.feed((Player)sender, args);
 			if (command.getName().equalsIgnoreCase("rank"))return PureHQRanks.ranks((Player)sender, args);
