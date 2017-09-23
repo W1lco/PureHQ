@@ -2,12 +2,10 @@ package me.Bassilone.PureHQ.Donor;
 
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
 import me.Bassilone.PureHQ.PureHQMain;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
-
+import me.Bassilone.PureHQ.UsefulMethods.PureHQStrings;
 
 
 public class PureHQRanks {
@@ -16,7 +14,7 @@ public class PureHQRanks {
 		if (args.length == 0 || args.length == 1){
 			return tellRank(player, args);
 		}else if (!player.isOp()){
-			player.sendMessage(ChatColor.RED+ "You don't have permission to perform this command");
+			player.sendMessage(PureHQStrings.NO_PERMISSION);
 			return true;
 		}else if (args.length == 2 && args[0].equalsIgnoreCase("add")){
 			return addRank(player, args);
@@ -27,7 +25,7 @@ public class PureHQRanks {
 		}else if (args.length == 3 && args[0].equalsIgnoreCase("remove")){
 			return removePlayer(player, args);
 		}else{
-			player.sendMessage(ChatColor.RED+ "Command not recognized!");
+			player.sendMessage(PureHQStrings.WRONG_COMMAND);
 			return true;
 		}
 	}
@@ -35,14 +33,14 @@ public class PureHQRanks {
 		if (args.length == 0){
 			String playerName = player.getName();
 			String rank = PureHQMain.playerData.getString("Name."+playerName + ".rank");
-			player.sendMessage(ChatColor.GREEN + "Your rank is: " + ChatColor.YELLOW + rank);
+			player.sendMessage(PureHQStrings.RANK.replace("{rank}", rank));
 		}else{
 			String playerName = args[0];
 			String rank = PureHQMain.playerData.getString("Name."+playerName + ".rank");
 			if (rank != null){
-				player.sendMessage(ChatColor.GREEN + playerName + "'s rank is: " + ChatColor.YELLOW + rank);
+				player.sendMessage(PureHQStrings.RANK_PLAYER.replace("{player}", playerName).replace("{rank}", rank));
 			}else{
-				player.sendMessage(ChatColor.RED + "This player does not exist!");
+				player.sendMessage(PureHQStrings.PLAYER_DOESNT_EXIST);
 			}
 			
 		}
@@ -56,10 +54,10 @@ public class PureHQRanks {
 		if (rankAvailable == null){
 			PureHQMain.ranks.set(rankName + ".name", rankName);
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.GREEN + "Successfully added the rank " + ChatColor.AQUA + rankName);
+			player.sendMessage(PureHQStrings.RANK_ADDED.replace("{rank}", rankName));
 		}
 		else{
-			player.sendMessage(ChatColor.RED+ "This rank already exists!");
+			player.sendMessage(PureHQStrings.RANK_EXISTS);
 		}
 		return true;
 	}
@@ -68,12 +66,12 @@ public class PureHQRanks {
 		String rankName = args[1];
 		String rankAvailable = PureHQMain.ranks.getString(rankName);
 		if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED+ "This rank doesn't exists!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 			return true;
 		}else{
 			PureHQMain.ranks.set(rankName, null);
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.GREEN + "Successfully removed the rank " + ChatColor.AQUA + rankName);
+			player.sendMessage(PureHQStrings.RANK_REMOVED.replace("{rank}", rankName));
 		}
 		return true;
 	}
@@ -85,7 +83,7 @@ public class PureHQRanks {
 		String playerName = args[1];
 		String rank = PureHQMain.playerData.getString("Name."+playerName + ".rank");
 		if (rank.equals(rankName)){
-			player.sendMessage(ChatColor.RED + "This player already has this rank!");
+			player.sendMessage(PureHQStrings.PLAYER_HAS_RANK);
 			return true;
 		}
 		boolean existance = false;
@@ -96,13 +94,13 @@ public class PureHQRanks {
 		      }
 		}
 		if (!existance){
-			player.sendMessage(ChatColor.RED + "This player does not exist!");
+			player.sendMessage(PureHQStrings.PLAYER_DOESNT_EXIST);
 		}else if (rankAvailable == null){
-			player.sendMessage(ChatColor.RED + "This rank does not exist!");
+			player.sendMessage(PureHQStrings.RANK_DOESNT_EXIST);
 		}else {
 			PureHQMain.playerData.set("Name."+playerName+".rank", rankName);
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.GREEN + "Successfully added " + ChatColor.YELLOW + playerName + ChatColor.GREEN + " to the rank " + ChatColor.YELLOW + rankName);
+			player.sendMessage(PureHQStrings.PLAYER_RANK_ADDED.replace("{player}", playerName).replace("{rank}", rankName));
 		}
 		
 		return true;
@@ -114,10 +112,10 @@ public class PureHQRanks {
 		if (rank.equals(rankName)){
 			PureHQMain.playerData.set("Name."+playerName + ".rank", "default");
 			PureHQFileManage.saveYamls();
-			player.sendMessage(ChatColor.YELLOW + playerName + ChatColor.GREEN + " was successfully removed from the rank " + ChatColor.YELLOW + rankName);
+			player.sendMessage(PureHQStrings.PLAYER_RANK_REMOVED.replace("{rank}", rankName).replace("{player}", playerName));
 			return true;
 		}else{
-			player.sendMessage(ChatColor.RED + "This player doesn't have this rank!");
+			player.sendMessage(PureHQStrings.PLAYER_NOT_IN_RANK);
 			return true;
 		}
 		

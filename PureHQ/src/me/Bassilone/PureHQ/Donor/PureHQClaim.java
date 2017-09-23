@@ -2,14 +2,11 @@ package me.Bassilone.PureHQ.Donor;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import me.Bassilone.PureHQ.PureHQMain;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQFileManage;
 import me.Bassilone.PureHQ.UsefulMethods.PureHQStrings;
-import net.md_5.bungee.api.ChatColor;
 
 public class PureHQClaim {
 	public static boolean claimMain(Player player, String[] args){
@@ -43,7 +40,7 @@ public class PureHQClaim {
 		if (!claimedAlready){
 			List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
 			if (commands == null){
-				player.sendMessage(ChatColor.RED + "This rank does not have claims!");
+				player.sendMessage(PureHQStrings.CLAIM_RANK_NO_CLAIMS);
 				return true;
 			}else{
 				for (String s : commands){
@@ -52,10 +49,10 @@ public class PureHQClaim {
 				}
 				PureHQMain.playerData.set("Name." + playerName + ".claimed", true);
 				PureHQFileManage.saveYamls();
-				Bukkit.broadcastMessage(ChatColor.GRAY + "[Claim] " + ChatColor.RED + playerName + ChatColor.YELLOW + " has claimed their keys and lives!");
+				Bukkit.broadcastMessage(PureHQStrings.BROADCAST_CLAIM.replace("{player}", playerName));
 			}
 		}else{
-			player.sendMessage(ChatColor.RED + "You already claimed!");
+			player.sendMessage(PureHQStrings.ALREADY_CLAIMED);
 		}
 		return true;
 	}
@@ -64,7 +61,7 @@ public class PureHQClaim {
 		String rank = args[1];
 		String amount = args[2];
 		if (!amount.matches("[0-9]+")){
-			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+			player.sendMessage(PureHQStrings.AMOUNT_NUMBER);
 		}
 		String rankAvailable = PureHQMain.ranks.getString(rank);
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
@@ -76,10 +73,8 @@ public class PureHQClaim {
 		if (commands == null){
 			commands = new ArrayList<String>();
 			commands.add(command);
-			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank);
 		}else{
 			commands.add(command);
-			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank); 
 		}
 		PureHQMain.ranks.set(rank + ".commands", commands);
 		PureHQFileManage.saveYamls();
@@ -92,7 +87,7 @@ public class PureHQClaim {
 		
 		String amount = args[2];
 		if (!amount.matches("[0-9]+")){
-			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+			player.sendMessage(PureHQStrings.AMOUNT_NUMBER);
 		}
 		String rankAvailable = PureHQMain.ranks.getString(rank);
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
@@ -103,9 +98,9 @@ public class PureHQClaim {
 		}
 		if (commands != null && commands.contains(command)){
 			commands.remove(command);
-			player.sendMessage(ChatColor.GREEN + "Removed " + ChatColor.GRAY + amount + " lives" + ChatColor.GREEN +  " from " + ChatColor.DARK_GRAY + rank); 
+			player.sendMessage(PureHQStrings.CLAIM_REMOVED_LIVES.replace("{amount}", amount).replace("{rank}", rank)); 
 		}else{
-			player.sendMessage(ChatColor.RED + "This rank does not have this command attached!");
+			player.sendMessage(PureHQStrings.CLAIM_RANK_NO_COMMAND);
 		}
 		PureHQMain.ranks.set(rank + ".commands", commands);
 		PureHQFileManage.saveYamls();
@@ -118,7 +113,7 @@ public class PureHQClaim {
 		String keyType = args[2];
 		String amount = args[3];
 		if (!amount.matches("[0-9]+")){
-			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+			player.sendMessage(PureHQStrings.AMOUNT_NUMBER);
 		}
 		String rankAvailable = PureHQMain.ranks.getString(rank);
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
@@ -130,10 +125,10 @@ public class PureHQClaim {
 		if (commands == null){
 			commands = new ArrayList<String>();
 			commands.add(command);
-			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " " + keyType + " key(s)" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank);
+			player.sendMessage(PureHQStrings.CLAIM_KEYS_ADDED.replace("{amount}", amount).replace("{key}", keyType).replace("{rank}", rank));
 		}else{
 			commands.add(command);
-			player.sendMessage(ChatColor.GREEN + "Added " + ChatColor.GRAY + amount + " " + keyType + " key(s)" + ChatColor.GREEN +  " to " + ChatColor.DARK_GRAY + rank); 
+			player.sendMessage(PureHQStrings.CLAIM_KEYS_ADDED.replace("{amount}", amount).replace("{key}", keyType).replace("{rank}", rank)); 
 		}
 		PureHQMain.ranks.set(rank + ".commands", commands);
 		PureHQFileManage.saveYamls();
@@ -145,7 +140,7 @@ public class PureHQClaim {
 		String keyType = args[2];
 		String amount = args[3];
 		if (!amount.matches("[0-9]+")){
-			player.sendMessage(ChatColor.RED + "Amount should be a number!");
+			player.sendMessage(PureHQStrings.AMOUNT_NUMBER);
 		}
 		String rankAvailable = PureHQMain.ranks.getString(rank);
 		List<String> commands = PureHQMain.ranks.getStringList(rank + ".commands");
@@ -156,9 +151,9 @@ public class PureHQClaim {
 		}
 		if (commands != null && commands.contains(command)){
 			commands.remove(command);
-			player.sendMessage(ChatColor.GREEN + "Removed " + ChatColor.GRAY + amount + " " + keyType + " key(s)" + ChatColor.GREEN +  " from " + ChatColor.DARK_GRAY + rank); 
+			player.sendMessage(PureHQStrings.CLAIM_REMOVED_LIVES.replace("{amount}", amount).replace("{rank}", rank)); 
 		}else{
-			player.sendMessage(ChatColor.RED + "This rank does not have this command attached!");
+			player.sendMessage(PureHQStrings.CLAIM_RANK_NO_COMMAND);
 		}
 		PureHQMain.ranks.set(rank + ".commands", commands);
 		PureHQFileManage.saveYamls();
